@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -9,14 +8,20 @@ public class ArrayGenerator {
         if (outerSize <= 0) {
             throw new IllegalArgumentException("Size should be positive integer");
         }
+        int[][] data = generateArray(outerSize);
+        sortAlternate(data);
+        return data;
+    }
+
+    private int[][] generateArray(int outerSize) {
         int[][] data = new int[outerSize][];
         HashSet<Integer> usedSizes = new HashSet<>(outerSize);
         Random random = new Random();
         for (int i = 0; i < outerSize; i++) {
-            int maxSize = 20;
-            int innerSize = random.nextInt(1, Math.max(maxSize, outerSize));
+            int defaultLimit = 50;
+            int innerSize = random.nextInt(1, Math.max(defaultLimit, outerSize));
             while (usedSizes.contains(innerSize)) {
-                innerSize = random.nextInt(1, Math.max(maxSize, outerSize));
+                innerSize = random.nextInt(1, Math.max(defaultLimit, outerSize));
             }
             usedSizes.add(innerSize);
             data[i] = new int[innerSize];
@@ -24,30 +29,21 @@ public class ArrayGenerator {
                 int upperLimit = 1000;
                 data[i][j] = random.nextInt(upperLimit);
             }
-            Arrays.sort(data[i]);
-            if (i % 2 == 1) {
-                for (int j = 0, temp; j < innerSize / 2; j++) {
-                    temp = data[i][j];
-                    data[i][j] = data[i][innerSize - j - 1];
-                    data[i][innerSize - j - 1] = temp;
-                }
-            }
+
         }
         return data;
     }
 
-    public static void main(String[] args) {
-        ArrayGenerator ag = new ArrayGenerator();
-        int[][] data = ag.createArray(15);
+    private void sortAlternate(int[][] data) {
         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[i].length; j++) {
-                if (j != 0) {
-                    System.out.print(' ');
+            Arrays.sort(data[i]);
+            if (i % 2 == 1) {
+                for (int j = 0, temp, antiJ; j < data[i].length / 2; j++) {
+                    antiJ = data[i].length - j - 1;
+                    temp = data[i][j];
+                    data[i][j] = data[i][antiJ];
+                    data[i][antiJ] = temp;
                 }
-                System.out.printf("%3d", data[i][j]);
-            }
-            if (i != data.length - 1) {
-                System.out.println();
             }
         }
     }
