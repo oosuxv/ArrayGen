@@ -34,14 +34,18 @@ public class ArrayGenerator {
     private void sortAlternate(int[][] data) {
         for (int i = 0; i < data.length; i++) {
             Arrays.sort(data[i]);
-            if (i % 2 == 1) {
-                for (int j = 0, temp, antiJ; j < data[i].length / 2; j++) {
-                    antiJ = data[i].length - j - 1;
-                    temp = data[i][j];
-                    data[i][j] = data[i][antiJ];
-                    data[i][antiJ] = temp;
-                }
+            if (i % 2 == 0) {
+                reverseArray(data[i]);
             }
+        }
+    }
+
+    private void reverseArray(int[] datum) {
+        for (int j = 0, temp, antiJ; j < datum.length / 2; j++) {
+            antiJ = datum.length - j - 1;
+            temp = datum[j];
+            datum[j] = datum[antiJ];
+            datum[antiJ] = temp;
         }
     }
 }
