@@ -1,35 +1,32 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 public class ArrayGenerator {
+    private static int ARRAY_STEP_LIMIT = 5;
+    private static int NUMBER_LIMIT = 1000;
 
-    public int[][] createArray(int outerSize) {
+    public int[][] generateArray(int outerSize) {
         if (outerSize <= 0) {
             throw new IllegalArgumentException("Size should be positive integer");
         }
-        int[][] data = generateArray(outerSize);
+        int[][] data = populateArray(outerSize);
         sortAlternate(data);
         return data;
     }
 
-    private int[][] generateArray(int outerSize) {
+    private int[][] populateArray(int outerSize) {
         int[][] data = new int[outerSize][];
-        HashSet<Integer> usedSizes = new HashSet<>(outerSize);
         Random random = new Random();
+        List<Integer> innerSizes = new ArrayList<>(outerSize);
+        innerSizes.add(random.nextInt(1, ARRAY_STEP_LIMIT));
+        for (int i = 1; i < outerSize; i++) {
+            innerSizes.add(innerSizes.get(i - 1) + random.nextInt(1, ARRAY_STEP_LIMIT));
+        }
+        Collections.shuffle(innerSizes);
         for (int i = 0; i < outerSize; i++) {
-            int defaultLimit = 50;
-            int innerSize = random.nextInt(1, Math.max(defaultLimit, outerSize));
-            while (usedSizes.contains(innerSize)) {
-                innerSize = random.nextInt(1, Math.max(defaultLimit, outerSize));
+            data[i] = new int[innerSizes.get(i)];
+            for (int j = 0; j < data[i].length; j++) {
+                data[i][j] = random.nextInt(NUMBER_LIMIT);
             }
-            usedSizes.add(innerSize);
-            data[i] = new int[innerSize];
-            for (int j = 0; j < innerSize; j++) {
-                int upperLimit = 1000;
-                data[i][j] = random.nextInt(upperLimit);
-            }
-
         }
         return data;
     }
